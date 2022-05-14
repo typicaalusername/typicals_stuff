@@ -33,11 +33,11 @@ for i,v in pairs(Character.Humanoid:GetPlayingAnimationTracks()) do
 	end
 end
 Character.Archivable = true
-Animations = true
+--Character.Animate:Clone().Parent = Dummy
 
 --// Cloning \\--
 
-local Dummy = game:GetObjects("rbxassetid://8329239188")[1]--9358207503")[1]
+local Dummy = Character:Clone()--game:GetObjects("rbxassetid://8329239188")[1]--9358207503")[1]
 Dummy.Parent = workspace
 Dummy.HumanoidRootPart.Anchored = false
 Dummy.HumanoidRootPart.CFrame = Character.HumanoidRootPart.CFrame
@@ -60,6 +60,7 @@ function Noclip()
 	for i,v in pairs(Dummy:GetDescendants()) do
 		if v:IsA("BasePart") then
 			v.CanCollide = false
+			--v.Anchored = false
 		end
 	end
     if game.Workspace:FindFirstChild(Character.Name) then
@@ -94,9 +95,14 @@ Netless = game.RunService.Heartbeat:Connect(Netless)
 
 --// Align \\--
 
-function CFrame(part0,part1,pos,ori) 
+function CFrame1(part0,part1,pos,ori) 
 	game.RunService.Heartbeat:Connect(function()
 		part0.CFrame = part1.CFrame
+	end)
+end
+function CFrame2(part0,part1,pos,ori) 
+	game.RunService.Heartbeat:Connect(function()
+		part0.CFrame = part1.CFrame + pos
 	end)
 end
 
@@ -116,26 +122,8 @@ table.insert(Limbs, Character['LeftFoot'])
 table.insert(Limbs, Character['UpperTorso'])
 table.insert(Limbs, Character['LowerTorso'])
 
-Alignment(Limbs[1], Dummy["Right Arm"], Vector3.new(0, 0.395, 0))
-Alignment(Limbs[2], Dummy["Right Arm"], Vector3.new(0, -0.2, 0))
-Alignment(Limbs[3], Dummy["Right Arm"], Vector3.new(0, -0.85, 0))
-
-Alignment(Limbs[4], Dummy["Left Arm"], Vector3.new(0, 0.395, 0))
-Alignment(Limbs[5], Dummy["Left Arm"], Vector3.new(0, -0.2, 0))
-Alignment(Limbs[6], Dummy["Left Arm"], Vector3.new(0, -0.85, 0))
-
-Alignment(Limbs[7], Dummy["Right Leg"], Vector3.new(0, 0.395, 0))
-Alignment(Limbs[8], Dummy["Right Leg"], Vector3.new(0, -0.2, 0))
-Alignment(Limbs[9], Dummy["Right Leg"], Vector3.new(0, -0.85, 0))
-
-Alignment(Limbs[10], Dummy["Left Leg"], Vector3.new(0, 0.395, 0))
-Alignment(Limbs[11], Dummy["Left Leg"], Vector3.new(0, -0.2, 0))
-Alignment(Limbs[12], Dummy["Left Leg"], Vector3.new(0, -0.85, 0))
-
-Alignment(Limbs[13], Dummy.Torso, Vector3.new(0, 0.65, 0))
-Alignment(Limbs[14], Dummy.Torso, Vector3.new(0, -0.8, 0))
-
 for i,v in pairs(Limbs) do
+	CFrame1(v, Dummy[v.Name])
 	for i,Object in pairs(v:GetChildren()) do
 		if Object:IsA("Motor6D") then
 			Object:Remove()
@@ -143,15 +131,15 @@ for i,v in pairs(Limbs) do
 	end
 end
 
-CFrame(Character.HumanoidRootPart, Dummy.Torso)
+CFrame2(Character.HumanoidRootPart, Dummy.UpperTorso, Vector3.new(0,-.2,0))
 
 for i,v in pairs(Character:GetChildren()) do
 	if v:IsA("Accessory") then
-		local clone = v:Clone()
+		local clone = Dummy[v.Name]
 		clone.Handle.Transparency = 1
-		clone.Parent = Dummy
+		--clone.Parent = Dummy
 		v.Handle:BreakJoints()
-		CFrame(v.Handle,Dummy[v.Name].Handle,Vector3.new(0,0,0),Vector3.new(0,0,0))
+		CFrame1(v.Handle,Dummy[v.Name].Handle,Vector3.new(0,0,0),Vector3.new(0,0,0))
 	end
 end
 
@@ -174,8 +162,10 @@ fakerespawnevent.Event:Connect(function()
 end)
 game:GetService("StarterGui"):SetCore("ResetButtonCallback", fakerespawnevent)
 
-if Animations then loadstring(game:HttpGet("https://raw.githubusercontent.com/TypicallyAUser/TypicalsConvertingLibrary/main/Animations"))().R6(Dummy.Torso) end
 workspace.Camera.CameraSubject = Dummy.Humanoid
 Player.Character = Dummy
 Library.Notification("Simple","You are now reanimated.\nYou may now run your scripts.")
-warn("Loaded R15 to R6 within seconds! Enjoy!")
+warn("Loaded R15 to R15 within seconds! Enjoy!")
+
+Dummy.Animate.Disabled = true
+Dummy.Animate.Disabled = false

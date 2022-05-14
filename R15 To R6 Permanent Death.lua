@@ -183,12 +183,43 @@ for i,v in pairs(Character:GetChildren()) do -- based off mizt
     end
 end
 
+Character.ChildAdded:Connect(function(Instance_)
+	if Instance_:IsA("Accessory") then
+		wait()
+		local HatClone = Instance_:Clone()
+		HatClone.Parent = Dummy
+		local hatattach = HatClone.Handle:FindFirstChildOfClass("Attachment")
+		local partattach
+		for i,v in pairs(Dummy:GetChildren()) do
+			if v:IsA("BasePart") then
+				for i,v in pairs(v:GetChildren()) do
+					if v.Name == hatattach.Name then
+						partattach = v
+						break
+					end
+				end
+				if partattach then break end
+			end
+		end
+		local FakeAccessoryWeld = Instance.new("Weld",HatClone.Handle)
+		FakeAccessoryWeld.Name = "AccessoryWeld"
+		FakeAccessoryWeld.Part0 = HatClone.Handle
+		FakeAccessoryWeld.Part1 = partattach.Parent
+		FakeAccessoryWeld.C0 = hatattach.CFrame
+		FakeAccessoryWeld.C1 = partattach.CFrame
+		CFrame(Instance_.Handle,HatClone.Handle,Vector3.new(0,0,0),Vector3.new(0,0,0))
+		Instance_.Handle.Transparency = 1
+	end
+end)
 if Animations then loadstring(game:HttpGet("https://raw.githubusercontent.com/TypicallyAUser/TypicalsConvertingLibrary/main/Animations"))().R6(Dummy.Torso) end
 workspace.Camera.CameraSubject = Dummy.Humanoid
 Library.Notification("Permanent Death","You are now reanimated.\nYou may now run your scripts.")
 warn("Loaded R15 to R6 within seconds! Enjoy!")
 
-Dummy.Humanoid.Died:Connect(function()
+local fakerespawnevent = Instance.new("BindableEvent")
+fakerespawnevent.Event:Connect(function()
+	game:GetService("StarterGui"):SetCore("ResetButtonCallback", true)
 	Character.Humanoid:Remove()
-	Library.Notification("Permanent Death","You're being resetted. Please wait!")
+	Library.Notification("Permanent Death", "Please wait.\nWe are force resetting your character.")
 end)
+game:GetService("StarterGui"):SetCore("ResetButtonCallback", fakerespawnevent)

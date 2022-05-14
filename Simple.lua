@@ -126,6 +126,24 @@ for i,v in pairs(Character:GetChildren()) do
 	end
 end
 
+Character.ChildAdded:Connect(function(Instance_)
+	if Instance_:IsA("Accessory") then
+		wait()
+		local HatClone = Instance_:Clone()
+		HatClone.Parent = Dummy
+		yes(Instance_.Handle,HatClone.Handle,Vector3.new(0,0,0),Vector3.new(0,0,0))
+		Instance_.Handle.Transparency = 1
+	end
+end)
+
+local fakerespawnevent = Instance.new("BindableEvent")
+fakerespawnevent.Event:Connect(function()
+	game:GetService("StarterGui"):SetCore("ResetButtonCallback", true)
+	Character.Humanoid:Remove()
+	Library.Notification("Simple", "Please wait.\nWe are force resetting your character.")
+end)
+game:GetService("StarterGui"):SetCore("ResetButtonCallback", fakerespawnevent)
+
 if Animations then loadstring(game:HttpGet("https://raw.githubusercontent.com/TypicallyAUser/TypicalsConvertingLibrary/main/Animations"))().R6(Dummy.Animate) end
 workspace.Camera.CameraSubject = Dummy.Humanoid
 Player.Character = Dummy
